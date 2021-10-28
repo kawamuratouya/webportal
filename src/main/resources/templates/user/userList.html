@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+
+<meta charset="UTF-8">
+<title>WebPortal Main</title>
+
+<!-- モバイル設定 -->
+<meta id="viewport" name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="manifest" th:href="@{/css/manifest.json}"
+	crossorigin="use-credentials">
+<meta name="application-name" content="WebPortal">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="WebPortal">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<!-- アイコン設定 -->
+<link rel="icon" th:href="@{/img/favicon.ico}" sizes="192x192"
+	href="../static/img/favicon.ico">
+<link rel="shortcut icon" th:href="@{/img/favicon.ico}">
+<link rel="apple-touch-icon" th:href="@{/img/favicon.ico}">
+<link rel="apple-touch-icon" th:href="@{/img/favicon.ico}" sizes="192x192">
+<link rel="apple-touch-icon" th:href="@{/img/favicon.ico}" sizes="58x58">
+
+<!-- スタイル設定 -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<link rel="stylesheet" th:href="@{/css/ress.css}"
+	href="../static/css/ress.css">
+<link rel="stylesheet" th:href="@{/css/home.css}"
+	href="../static/css/home.css">
+
+</head>
+
+<body th:classappend="${session.isDarkmode} ? 'mode-dark'">
+
+	<!-- 共通ヘッダ -->
+	<nav class="navbar navbar-expand-lg navbar-dark btn btn-danger">
+		<h1>
+			<a class="navbar-brand title-font" th:href="@{/}">WebPortal.com</a>
+		</h1>
+		<button class="navbar-toggler" type="button" data-toggle="collapse"
+			data-target="#navbarToggler" aria-controls="navbarToggler"
+			aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarToggler">
+			<ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+				<li class="nav-item active"><a class="nav-link"
+					th:href="@{/change}"> <img class="config-img"
+						th:src="@{/img/config.png}" src="../static/img/config.png">
+				</a></li>
+				<li>
+					<form class="my-2 my-lg-0" method="post" th:action="@{/logout}">
+						<button class="btn btn-outline-light my-2 my-sm-0" type="submit">Logout</button>
+					</form>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<!-- コンテンツ -->
+	<div class="container">
+		<div class="content-box">
+			<h3>ユーザ一覧</h3>
+			<!-- 基本一件だが、API構造に従い繰り返す構文とする -->
+				<table class="table table-striped table-dark">
+					<thead>
+						<tr>
+							<th scope="col">ユーザID(メールアドレス)</th>
+							<th scope="col">アカウント有効性</th>
+							<th scope="col">ユーザ名</th>
+							<th scope="col">ダークモード</th>
+							<th scope="col">権限</th>
+							<th scope="col">↓</th>
+						</tr>
+					</thead>
+					<tbody th:each="user : ${userEntity.userlist}">
+						<tr>
+							<td>
+								<span th:text="${user.user_id}"></span>
+							</td>
+							<td>
+								<span  th:if ="${user.enabled}">有効</span>
+								<span  th:unless ="${user.enabled}">無効</span>
+							</td>
+							<td>
+								<span th:text ="${user.user_name}"></span>
+							</td>
+							<td>
+								<span  th:if ="${user.darkmode}">DarkMode</span>
+								<span  th:unless ="${user.darkmode}">-</span>
+							</td>
+							<td>
+								<span th:text ="${user.role.getValue()}"></span>
+							</td>
+							<td>
+								<a class="btn btn-success" th:href="@{'/user/detail/' + *{user.user_id}}">詳細</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<form method="get" th:action="@{/user/insert}">
+					<button type="submit" class="btn btn-info">作成</button>
+				</form>
+		</div>
+	</div>
+	
+
+	<!-- 共通スクリプト -->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+</body>
+</html>
